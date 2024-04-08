@@ -1,0 +1,77 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="col-md-6">
+                    <div class="card"> <!--Creacion del objeto card-->
+                        <div class="card-header">
+                            <legend>Nuevo proveedor</legend>
+                            {% if error %}
+                            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <form action="/crear-proveedor" method="post" class="needs-validation" novalidate>
+                                {{ form.hidden_tag() }}
+                                <div class="form-group">
+                                    {{ form.nombre.label }}
+                                    {{ form.nombre(class_="form-control", size=64) }}
+                                    {% for error in form.nombre.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        {{ form.telefono.label }}
+                                        {{ form.telefono(class_="form-control", size=64) }}
+                                        {% for error in form.telefono.errors %}
+                                        <span style="color: red;">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group col-6">
+                                    {{ form.cif.label }}
+                                    {{ form.cif(class_="form-control", size=64) }}
+                                    {% for error in form.cif.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                    {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {{ form.email.label }}
+                                    {{ form.email(class_="form-control", size=100) }}
+                                    {% for error in form.email.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.direccion.label }}
+                                    {{ form.direccion(class_="form-control", size=250) }}
+                                    {% for error in form.direccion.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        {{ form.iva.label }}
+                                        {{ form.iva(class_="form-control") }}
+                                        {% for error in form.iva.errors %}
+                                        <span style="color: red;">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-group col-6">
+                                        {{ form.descuento.label }}
+                                        {{ form.descuento(class_="form-control") }}
+                                        {% for error in form.descuento.errors %}
+                                        <span style="color: red;">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    {{ form.submit(class="btn btn-primary mt-3") }}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        </main>
+{% endblock content %}

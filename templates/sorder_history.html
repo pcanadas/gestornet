@@ -1,0 +1,56 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+    {% with messages = get_flashed_messages(with_categories = True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert"> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% if error %}
+    <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Historial de pedidos a proveedores</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+                <a href="{{ url_for('proveedor_order')}}" class="btn btn-sm btn-outline-secondary">Nuevo pedido</a>
+            </div>
+        </div>
+    </div>
+    <div class="card border-primary mb-3 small">
+        <table class="table table-hover">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col">Factura nº</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Proveedor</th>
+                    <th scope="col">Referencia</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Total parcial</th>
+                    <th scope="col">Descuento</th>
+                    <th scope="col">Iva</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entrada in entradas %}
+                    <tr>
+                        <th scope="row">{{entrada.id}}</th>
+                        <td>{{entrada.fecha.strftime("%d-%m-%Y")}}</td>
+                        <td>{{entrada.proveedor}}</td>
+                        <td>{{entrada.referencia}}</td>
+                        <td>{{entrada.cantidad}}</td>
+                        <td>{{entrada.total_precio}}</td>
+                        <td>{{entrada.descuento}}</td>
+                        <td>{{entrada.iva}}</td>
+                        <td>{{entrada.total}}&nbsp;€</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock content %}

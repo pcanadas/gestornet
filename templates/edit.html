@@ -1,0 +1,226 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Editar registro</h1>
+    </div>
+    {% if edit_item == 'editar_producto' %}
+        <div class="card border-primary mb-3 col-md-8">
+            {% if error %}
+            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+            {% endif %}
+            {% if product %}
+                <form action="/editp/{{product.id}}" method="post" class="needs-validation" novalidate>
+                    <input type="text" name="id" class="form-control" value="{{ product.id }}" required hidden>
+                    <fieldset style="padding:10px;">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.nombre.label(class="form-label mt-3") }}
+                            {{ form.nombre(class_="form-control", size=64, value=product.nombre) }}
+                            {% for error in form.nombre.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.descripcion.label(class="form-label mt-3") }}
+                            {{ form.descripcion(class_="form-control", size=500, value=product.descripcion) }}
+                            {% for error in form.descripcion.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                {{ form.referencia.label(class="form-label mt-3") }}
+                                {{ form.referencia(class_="form-control", size=64, value=product.referencia) }}
+                                {% for error in form.referencia.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group col-6 col-md-4">
+                                {{ form.stock.label(class="form-label mt-3") }}
+                                {{ form.stock(class_="form-control", value=product.stock) }}
+                                {% for error in form.stock.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form.proveedor.label(class="form-label mt-3") }}
+                            {{ form.proveedor(class_="form-control", value=product.proveedor) }}
+                            {% for error in form.proveedor.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            <small id="proveedorHelp" class="form-text text-muted"><br>Si no encuentra el proveedor en el listado, dé de alta primero al proveedor.</small>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                {{ form.preciocoste.label(class="form-label mt-3") }}
+                                {{ form.preciocoste(class_="form-control", value=product.preciocoste) }}
+                                {% for error in form.preciocoste.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group col-6">
+                                {{ form.pvp.label(class="form-label mt-3") }}
+                                {{ form.pvp(class_="form-control", value=product.pvp) }}
+                                {% for error in form.pvp.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6 col-md-4">
+                                {{ form.almacen.label(class="form-label mt-3") }}
+                                {{ form.almacen(class_="form-select", value=product.almacen) }}
+                                {% for error in form.almacen.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group col-12 col-md-8">
+                                {{ form.ubicacion.label(class="form-label mt-3") }}
+                                {{ form.ubicacion(class_="form-control", value=product.ubicacion) }}
+                                {% for error in form.ubicacion.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group form-check mt-3">
+                                {% if product.descatalogado == True %}
+                                    {{ form.descatalogado(type="checkbox", checked="") }}
+                                {% else %}
+                                    {{ form.descatalogado(type="checkbox") }}
+                                {% endif %}
+                                {{ form.descatalogado.label }}
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary  mt-3">Modificar producto</button>
+                        </div>
+                    </fieldset>
+                </form>
+            {% endif %}
+        </div>
+    {% elif edit_item == 'editar_proveedor' %}
+        <div class="card border-primary mb-3 col-md-8">
+            {% if error %}
+            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+            {% endif %}
+            {% if supplier %}
+                <form action="/edits/{{supplier.id}}" method="POST" class="needs-validation" novalidate>
+                    <input type="text" name="id" class="form-control" value="{{ supplier.id }}" required hidden>
+                    <fieldset style="padding:10px;">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.nombre.label(class="form-label mt-3") }}
+                            {{ form.nombre(class_="form-control", size=64, value=supplier.nombre) }}
+                            {% for error in form.nombre.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                {{ form.telefono.label(class="form-label mt-3") }}
+                                {{ form.telefono(class_="form-control", size=64, value=supplier.telefono) }}
+                                {% for error in form.telefono.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group col-6 col-md-4">
+                                {{ form.cif.label(class="form-label mt-3") }}
+                                {{ form.cif(class_="form-control", size=64, value=supplier.cif) }}
+                                {% for error in form.cif.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form.email.label(class_="form-label mt-3") }}
+                            {{ form.email(class_="form-control", size=100, value=supplier.email) }}
+                            {% for error in form.email.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.direccion.label(class="form-label mt-3") }}
+                            {{ form.direccion(class_="form-control", size=250, value=supplier.direccion) }}
+                            {% for error in form.direccion.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                {{ form.iva.label(class="form-label mt-3") }}
+                                {{ form.iva(class_="form-control", value=supplier.iva) }}
+                                {% for error in form.iva.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group col-6">
+                                {{ form.descuento.label(class="form-label mt-3") }}
+                                {{ form.descuento(class_="form-control", value=supplier.descuento) }}
+                                {% for error in form.descuento.errors %}
+                                <span style="color: red;">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary  mt-3">Modificar proveedor</button>
+                        </div>
+                    </fieldset>
+                </form>
+            {% endif %}
+        </div>
+    {% elif edit_item == 'editar_cliente' %}
+        <div class="card border-primary mb-3 col-md-8">
+            {% if error %}
+            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+            {% endif %}
+            {% if users %}
+                <form action="/editu/{{users.id}}" method="POST" class="needs-validation" novalidate>
+                    <input type="text" name="id" class="form-control" value="{{ users.id }}" required hidden>
+                    <input type="text" name="password" class="form-control" value="{{ users.password }}" required hidden>
+                    <fieldset style="padding:10px;">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.name.label(class="form-label mt-3") }}
+                            {{ form.name(class_="form-control", size=60, value=users.name) }}
+                            {% for error in form.name.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.surname.label(class="form-label mt-3") }}
+                            {{ form.surname(class_="form-control", size=80, value=users.surname) }}
+                            {% for error in form.surname.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.email.label(class="form-label mt-3") }}
+                            {{ form.email(class_="form-control", size=256, value=users.email) }}
+                            {% for error in form.email.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group form-check mt-3">
+                                {% if users.is_admin == True %}
+                                    {{ form.is_admin(type="checkbox", checked="") }}
+                                {% else %}
+                                    {{ form.is_admin(type="checkbox") }}
+                                {% endif %}
+                                {{ form.is_admin.label }}
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary  mt-3">Modificar cliente</button>
+                        </div>
+                    </fieldset>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+</main>
+{% endblock content %}

@@ -1,0 +1,165 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Ver registro</h1>
+    </div>
+    {% if view_item == 'ver_producto' %}
+        <div class="card border-primary mb-3 col-md-8">
+            {% if error %}
+            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+            {% endif %}
+            <form action="/view/<int:entrada_id>" method="get" novalidate>
+                <fieldset style="padding:20px;">
+                    {% for item in product %}
+                    <div class="form-group">
+                        <label for="disabledTextNombre" class="form-label mt-3">{{ form.nombre.label }}</label>
+                        <input type="text" id="disabledTextNombre" class="form-control" value="{{ item.nombre }}" readonly="">
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextDescripcion" class="form-label mt-3">{{ form.descripcion.label }}</label>
+                        <textarea id="disabledTextDescripcion" class="form-control" readonly="" rows="5">{{ item.descripcion }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="disabledTextReferencia" class="form-label mt-3">{{ form.referencia.label }}</label>
+                            <input type="text" id="disabledTextReferencia" class="form-control" value="{{ item.referencia }}" readonly="">
+                        </div>
+                        <div class="form-group col-6 col-md-4">
+                            <label for="disabledTextStock" class="form-label mt-3">{{ form.stock.label }}</label>
+                            <input type="text" id="disabledTextStock" class="form-control" value="{{ item.stock }}" readonly="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextProveedor" class="form-label mt-3">{{ form.proveedor.label }}</label>
+                        {% for i in proveedorid %} <!-- Ponemos el nombre del proveedor, en vez de su código -->
+                            {% if i[0] == item.id %}
+                                <input type="text" id="disabledTextProveedor" class="form-control" value="{{ i[1] }}" readonly="">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="disabledTextCoste" class="form-label mt-3">{{ form.preciocoste.label }}</label>
+                            <input type="text" id="disabledTextCoste" class="form-control" value="{{ item.preciocoste }}" readonly="">
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="disabledTextPvp" class="form-label mt-3">{{ form.pvp.label }}</label>
+                            <input type="text" id="disabledTextPvp" class="form-control" value="{{ item.pvp }}" readonly="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6 col-md-4">
+                            <label for="disabledTextAlmacen" class="form-label mt-3">{{ form.almacen.label }}</label>
+                            {% for i in almacenid %} <!-- Ponemos el nombre del almacén, en vez de su código -->
+                                {% if i[0] == item.id %}
+                                    <input type="text" id="disabledTextAlmacen" class="form-control" value="{{ i[1] }}" readonly="">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="form-group col-12 col-md-8">
+                            <label for="disabledTextUbicacion" class="form-label mt-3">{{ form.ubicacion.label }}</label>
+                            <input type="text" id="disabledTextUbicacion" class="form-control" value="{{ item.ubicacion }}" readonly="">
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <label for="disabledTextDescatalogado" class="form-check-label mt-3">{{ form.descatalogado.label }}</label>
+                        {% if item.descatalogado == 0 %}
+                            <input class="form-check-input mt-3" type="checkbox" id="disabledTextDescatalogado" value="{{ item.descatalogado }}" disabled="">
+                        {% else %}
+                            <input class="form-check-input mt-3" type="checkbox" id="disabledTextDescatalogados" value="{{ item.descatalogado }}" checked="" disabled="">
+                        {% endif %}
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('editp', entrada_id=item.id) }}" class="btn btn-primary mt-3">Editar</a>
+                    </div>
+                    {% endfor %}
+                </fieldset>
+            </form>
+        </div>
+    {% elif view_item == 'ver_proveedor' %}
+        <div class="card border-primary mb-3 col-md-8">
+            {% if error %}
+            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+            {% endif %}
+            <form action="/view/<int:entrada_id>" method="get" novalidate>
+                <fieldset style="padding:20px;">
+                    {% for item in supplier %}
+                    <div class="form-group">
+                        <label for="disabledTextNombreS" class="form-label mt-3">{{ form.nombre.label }}</label>
+                        <input type="text" id="disabledTextNombreS" class="form-control" value="{{ item.nombre }}" readonly="">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="disabledTextTelefono" class="form-label mt-3">{{ form.telefono.label }}</label>
+                            <input type="text" id="disabledTextTelefono" class="form-control" value="{{ item.telefono }}" readonly="">
+                        </div>
+                        <div class="form-group col-6 col-md-4">
+                            <label for="disabledTextCif" class="form-label mt-3">{{ form.cif.label }}</label>
+                            <input type="text" id="disabledTextCif" class="form-control" value="{{ item.cif }}" readonly="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextEmail" class="form-label mt-3">{{ form.email.label }}</label>
+                        <input type="text" id="disabledTextEmail" class="form-control" value="{{ item.email }}" readonly="">
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextDireccion" class="form-label mt-3">{{ form.direccion.label }}</label>
+                        <textarea id="disabledTextDireccion" class="form-control" readonly="" rows="3">{{ item.direccion }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="disabledTextIva" class="form-label mt-3">{{ form.iva.label }}</label>
+                            <input type="text" id="disabledTextIva" class="form-control" value="{{ item.iva }}" readonly="">
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="disabledTextDescuento" class="form-label mt-3">{{ form.descuento.label }}</label>
+                            <input type="text" id="disabledTextDescuento" class="form-control" value="{{ item.descuento }}" readonly="">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('edits', entrada_id=item.id) }}" class="btn btn-primary mt-3">Editar</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </fieldset>
+            </form>
+        </div>
+    {% elif view_item == 'ver_cliente' %}
+        <div class="card border-primary mb-3 col-md-8">
+            {% if error %}
+            <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+            {% endif %}
+            <form action="/viewu/<int:entrada_id>" method="get" novalidate>
+                <fieldset style="padding:20px;">
+                    {% for user in users %}
+                    <div class="form-group">
+                        <label for="disabledTextNombreU" class="form-label mt-3">{{ form.name.label }}</label>
+                        <input type="text" id="disabledTextNombreU" class="form-control" value="{{ user.name }}" readonly="">
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextApellido" class="form-label mt-3">{{ form.surname.label }}</label>
+                        <input type="text" id="disabledTextApellido" class="form-control" value="{{ user.surname }}" readonly="">
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextEmailU" class="form-label mt-3">{{ form.email.label }}</label>
+                        <input type="text" id="disabledTextEmailU" class="form-control" value="{{ user.email }}" readonly="">
+                    </div>
+                    <div class="form-check">
+                        <label for="disabledTextAdmin" class="form-check-label mt-3">{{ form.is_admin.label }}</label>
+                        {% if user.is_admin == 0 %}
+                            <input class="form-check-input mt-3" type="checkbox" id="disabledTextAdmin" value="{{ user.is_admin }}" disabled="">
+                        {% else %}
+                            <input class="form-check-input mt-3" type="checkbox" id="disabledTextAdmins" value="{{ user.is_admin }}" checked="" disabled="">
+                        {% endif %}
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('editu', entrada_id=user.id) }}" class="btn btn-primary mt-3">Editar</a>
+                    </div>
+                    {% endfor %}
+                </fieldset>
+            </form>
+        </div>
+    {% endif %}
+</main>
+{% endblock content %}

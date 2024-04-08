@@ -1,0 +1,51 @@
+<!-- Sidebar -->
+<div class="col-auto col-md-3 col-xl-2 px-sm-0 px-0 bg-light">
+    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
+        <span class="fs-5 d-none d-sm-inline">Menu</span>
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+            <li>
+                <a class="nav-link px-0 align-middle" href="/index">
+                    <i class="fs-4 bi-speedometer2"></i><span class="ms-1 d-none d-sm-inline">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link px-0 align-middle" href="/historial">
+                    <i class="fs-4 bi-ui-checks"></i><span class="ms-1 d-none d-sm-inline">Pedidos</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link px-0 align-middle" href="/proveedores">
+                    <i class="fs-4 bi-truck"></i><span class="ms-1 d-none d-sm-inline">Proveedores</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link px-0 align-middle" href="/productos">
+                    <i class="fs-4 bi-grid"></i><span class="ms-1 d-none d-sm-inline">Productos</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link px-0 align-middle" href="/almacenes/1">
+                    <i class="fs-4 bi-buildings"></i><span class="ms-1 d-none d-sm-inline">Almacenes</span>
+                </a>
+            </li>
+            {% if current_user.is_admin %}
+            <li>
+                <a class="nav-link px-0 align-middle" href="/usuarios">
+                    <i class="fs-4 bi-people"></i><span class="ms-1 d-none d-sm-inline">Clientes</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link px-0 align-middle" href="/dashboard">
+                    <i class="fs-4 bi-graph-up-arrow"></i><span class="ms-1 d-none d-sm-inline">Informes</span>
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                <a class="nav-link px-0 align-middle" href="/logout">
+                    <i class="fs-4 bi-power"></i><span class="ms-1 d-none d-sm-inline">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- End Sidebar -->

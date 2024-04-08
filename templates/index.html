@@ -1,0 +1,272 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    {% with messages = get_flashed_messages(with_categories = True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <br><div class="alert alert-{{ category }}" role="alert"> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% if error %}
+        <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Panel de control</h1>
+    </div>
+    <!-- Saludo inicial  -->
+    <p>Hola {{ current_user.name }}&nbsp;{{ current_user.surname }}</p>
+
+    <!-- Boxes de datos  -->
+    <div class="main-cards">
+        <div class="card text-white bg-success mb-3" style="justify-content: space-around; padding: 20px;">
+            <div class="card-inner">
+                <h4>Nº PEDIDOS</h4>
+                <span class="bi bi-cart2"></span>
+            </div>
+            <h3>{{ npedidos }}</h3>
+        </div>
+        <div class="card text-white bg-danger mb-3" style="justify-content: space-around; padding: 20px;">
+            <div class="card-inner">
+                <h4>CLIENTES</h4>
+                <span class="bi bi-people"></span>
+            </div>
+            <h3>{{ nusers }}</h3>
+        </div>
+        <div class="card text-white bg-warning mb-3" style="justify-content: space-around; padding: 20px;">
+            <div class="card-inner">
+                <h4>PROVEEDORES</h4>
+                <span class="bi bi-truck"></span>
+            </div>
+            <h3>{{ nproveedores }}</h3>
+        </div>
+        <div class="card text-white bg-info mb-3" style="justify-content: space-around; padding: 20px;">
+            <div class="card-inner">
+                <h4>PRODUCTOS</h4>
+                <span class="bi bi-boxes"></span>
+            </div>
+            <h3>{{ nproductos }}</h3>
+        </div>
+    </div>
+
+    <!-- Gráficas de ventas  -->
+    <div class="main-cards2">
+        <div class="card border-primary mb-3" style="justify-content: space-around;">
+            <div class="card-header">
+                <div class="card-title">Pedidos por meses</div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="orders"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="card border-primary mb-3" style="justify-content: space-around;">
+            <div class="card-header">
+                <div class="card-title">Ventas por proveedor</div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                <canvas id="ventas_proveedor"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tablas resumen  -->
+    <div class="main-cards2">
+        <div class="card border-primary mb-3" style="justify-content: space-around;">
+            <div class="card-header">Productos más Pedidos</div>
+            <div class="card-body small">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                          <th scope="col">Ref#</th>
+                          <th scope="col">Producto</th>
+                          <th scope="col">Ud. Pedidas</th>
+                          <th scope="col">Facturación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in producto_pedido %}
+                        <tr class="table-light">
+                            <th scope="row">{{producto[0]}}</th>
+                            <td>{{producto[1]}}</td>
+                            <td align="center">{{ producto[2] }}</td>
+                            {% for item in producto_facturas %} <!-- Sacamos la cantidad facturada por producto -->
+                                {% if item[0] == producto[0] %}
+                                <td align="center">{{ item[2] }} €</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card border-primary mb-3" style="justify-content: space-around;">
+            <div class="card-header">Productos con mayor Facturación</div>
+            <div class="card-body small">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                          <th scope="col">Ref#</th>
+                          <th scope="col">Producto</th>
+                          <th scope="col">Ud. Pedidas</th>
+                          <th scope="col">Facturacion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in producto_factura %}
+                        <tr class="table-light">
+                            <th scope="row">{{producto[0]}}</th>
+                            <td>{{producto[1]}}</td>
+                            {% for item in producto_pedidos %} <!-- Sacamos la cantidad facturada por producto -->
+                                {% if item[0] == producto[0] %}
+                                <td align="center">{{ item[2] }}</td>
+                                {% endif %}
+                            {% endfor %}
+                            <td align="center">{{ producto[2] }} €</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de productos  -->
+    <h2>Listado de Productos</h2>
+    {% for producto in productoss %} <!-- Revisamos si hay stock bajo en algún producto -->
+        {% if producto.stock <= 10 %} <!-- Establecemos que el pedido base son 100 unidades, con lo que avisamos
+                                            cuando solo queda el 10%, que son 10 unidades -->
+        <p class="text-primary"><span class="text-warning"><strong>Atención!</strong></span> El producto con referencia <strong>{{producto.referencia}}</strong> no tiene stock suficiente. Se recomienda hacer pedido al proveedor.</p>
+        {% endif %}
+    {% endfor %}
+    <div class="card border-primary mb-3 small">
+        <table class="table table-hover"> <!-- Mostramos una tabla con los datos de todos los productos -->
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col">Referencia</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Proveedor</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Almacen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productoss %}
+                    {% if producto.stock <= 10 %} <!-- Establecemos que el pedido base son 100 unidades, con lo que
+                                                        avisamos cuando solo queda el 10%, que son 10 unidades -->
+                    <tr class="table-danger">
+                    {% else %}
+                    <tr>
+                    {% endif %}
+                        <th scope="row">{{producto.referencia}}</th>
+                        <td>{{producto.nombre}}</td>
+                        {% for item in proveedorid %} <!-- Ponemos el nombre del proveedor, en vez de su código -->
+                            {% if item[0] == producto.id %}
+                            <td>{{ item[1] }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{producto.stock}}</td>
+                        {% for num in almacenid %} <!-- Ponemos el nombre del almacén, en vez de su código -->
+                            {% if num[0] == producto.id %}
+                            <td>{{ num[1] }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+{% endblock content %}
+<!-- Specific Page JS  -->
+{% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            let lista_orders = JSON.parse({{ orders_data | tojson }})
+                fecha = JSON.parse({{ fechas_data | tojson }})
+                lista_totales = JSON.parse({{ total_data | tojson }})
+                lista_proveedores = JSON.parse({{ proveedores_data | tojson }});
+            var orders = document.getElementById('orders').getContext('2d')
+                ventas_proveedor = document.getElementById('ventas_proveedor').getContext('2d');
+
+            new Chart(orders, {
+                type: 'line',
+                data: {
+                    labels: fecha,
+                    datasets: [{
+                        label: 'Pedidos mensuales en €',
+                        data: lista_orders,
+                        backgroundColor: ['#5DA5DA', '#FAA43A', '#60BD68', '#B276B2', '#E16851', '#FB8267'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+				    maintainAspectRatio: false,
+				    legend: {
+					    position: 'bottom',
+					    labels : {
+						    padding: 10,
+						    fontColor: '#1d7af3',
+					    }
+				    },
+				    plugins: {
+                        legend: {
+                          display: false
+                        }
+                    }
+                }
+            });
+		    new Chart(ventas_proveedor, {
+                type: 'pie',
+                data: {
+                    datasets: [{
+                        data: lista_totales,
+                        backgroundColor :[
+                            "rgba(54, 162, 235, 1)",
+                            "rgba(255, 99, 132, 1)",
+                            "rgba(255, 206, 86, 1)",
+                            "rgba(5, 175, 143, 1)",
+                            "rgba(180, 137, 215, 1)",
+                            "rgba(217, 134, 91, 1)"],
+                        borderWidth: 0
+                    }],
+                    labels: lista_proveedores
+                },
+                options : {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position : 'outside',
+                        labels : {
+                            fontColor: 'rgb(154, 154, 154)',
+                            fontSize: 11,
+                            usePointStyle : true,
+                            padding: 10
+                        }
+                    },
+                    pieceLabel: {
+                        render: 'percentage',
+                        fontColor: 'black',
+                        fontSize: 14,
+                    },
+                    tooltips: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 10,
+                            top: 10,
+                            bottom: 10
+                        }
+                    }
+                }
+            })
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+{% endblock javascripts %}

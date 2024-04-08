@@ -1,0 +1,270 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+                <div class="col">
+                    <div class="row">
+                        <div class="col-md-9 mt-4"> <!-- Primer bloque -->
+                            <!-- Boxes de datos  -->
+                            <div class="main-cards">
+                                <div class="card border-light mb-3" style="justify-content: space-around; padding: 20px;">
+                                    <div class="card-inner">
+                                        <span class="bi bi-cart2" style="color:#93d5de"></span>
+                                        <h5 align="right">Nº Pedidos<br>{{ numpedidos }}</h5>
+                                    </div>
+                                </div>
+                                <div class="card border-light mb-3" style="justify-content: space-around; padding: 20px;">
+                                    <div class="card-inner">
+                                        <span class="bi bi-people" style="color:#93d5de"></span>
+                                        <h5 align="right">Facturación<br>{{ tfactura }} €</h5>
+                                    </div>
+                                </div>
+                                <div class="card border-light mb-3" style="justify-content: space-around; padding: 20px;">
+                                    <div class="card-inner">
+                                        <span class="bi bi-graph-up-arrow" style="color:#93d5de"></span>
+                                        <h5 align="right">Beneficios<br>{{ tbeneficio }} %</h5>
+                                    </div>
+                                </div>
+                                <div class="card border-light mb-3" style="justify-content: space-around; padding: 20px;">
+                                    <div class="card-inner">
+                                        <span class="bi bi-boxes" style="color:#93d5de"></span>
+                                        <h5 align="right">Productos<br>{{ numproductos }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4"> <!-- Primera fila del grid -->
+                                <div class="col-md-6"><!-- Primera columna de la primera fila -->
+                                    <div class="card border-light">
+                                        <div class="card-header">
+                                            <div class="card-title">Facturación mensual</div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container2">
+                                                <canvas id="orders"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"><!-- segunda columna de la primera fila -->
+                                    <div class="card border-light">
+                                        <div class="card-header">
+                                            <div class="card-title">Productos vendidos por mes</div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container2">
+                                            <canvas id="num_products"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4"> <!-- segunda fila del grid -->
+                                <div class="col-md-6"> <!-- Primera columna de la segunda fila -->
+                                    <div class="card border-light">
+                                        <div class="card-header">
+                                            <div class="card-title">Facturación por proveedor</div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container2">
+                                                <canvas id="ventas_proveedor" style="width: 50%;"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"> <!-- Segunda columna de la segunda fila -->
+                                    <div class="card border-light">
+                                        <div class="card-header">
+                                            <div class="card-title">% Beneficios por proveedor</div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container2">
+                                            <canvas id="beneficios"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mt-4"> <!-- Segundo bloque -->
+                            <div class="card border-light">
+                                <div class="card-header">
+                                    <div class="card-title">Stock de artículos</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container3">
+                                    <canvas id="stock"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+{% endblock content %}
+
+<!-- Specific Page JS  -->
+{% block javascripts %}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            let lista_orders = JSON.parse({{ orders_data | tojson }})
+                fecha = JSON.parse({{ fechas_data | tojson }})
+                lista_nproductos = JSON.parse({{ nproducts_data | tojson }})
+                lista_productos = JSON.parse({{ productos_data | tojson }})
+                stock_quantity = JSON.parse({{ stock_data | tojson }})
+                lista_totales = JSON.parse({{ total_data | tojson }})
+                lista_proveedores = JSON.parse({{ proveedores_data | tojson }})
+                lista_beneficios = JSON.parse({{ beneficios_data | tojson }})
+                lista_pbeneficio = JSON.parse({{ pbeneficio_data | tojson }});
+            var orders = document.getElementById('orders').getContext('2d')
+                num_products = document.getElementById('num_products').getContext('2d')
+                stock = document.getElementById('stock').getContext('2d')
+                ventas_proveedor = document.getElementById('ventas_proveedor').getContext('2d')
+                beneficios = document.getElementById('beneficios').getContext('2d');
+
+            new Chart(orders, {
+                type: 'bar',
+                data: {
+                    labels: fecha,
+                    datasets: [{
+                        label: 'Pedidos mensuales en €',
+                        data: lista_orders,
+                        backgroundColor: ['rgb(23, 107, 135)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+				    maintainAspectRatio: true,
+				    legend: {
+					    position: 'bottom',
+					    labels : {
+						    padding: 10,
+						    fontColor: '#1d7af3',
+					    }
+				    },
+				    plugins: {
+                        legend: {
+                          display: false
+                        }
+                    }
+                }
+            });
+            new Chart(num_products, {
+                type: 'bar',
+                data: {
+                    labels: fecha,
+                    datasets: [{
+                        label: 'Nª productos pedidos por mes',
+                        data: lista_nproductos,
+                        backgroundColor: ['rgb(23, 107, 135)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+				    maintainAspectRatio: true,
+				    legend: {
+					    position: 'bottom',
+					    labels : {
+						    padding: 10,
+						    fontColor: '#1d7af3',
+					    }
+				    },
+				    plugins: {
+                        legend: {
+                          display: false
+                        }
+                    }
+                }
+            });
+            new Chart(stock, {
+			    type: 'bar',
+                data: {
+                    labels: lista_productos,
+                    datasets : [{
+                        axis: 'y',
+                        label: "Stock de productos",
+                        data: stock_quantity,
+                        backgroundColor: ['rgb(23, 107, 135)'],
+                        borderWidth: 1,
+                        barPercentage: 1.0,
+                        categoryPercentage: 0.5
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        y: {
+                            beginAtZero:true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                          display: false
+                        }
+                    }
+                }
+		    });
+		    new Chart(ventas_proveedor, {
+                data: {
+                    datasets: [{
+                        type: 'line',
+                        label: 'Beneficios por proveedor',
+                        data: lista_beneficios,
+                        backgroundColor: ['rgb(14,64,90)'],
+                        borderWidth: 1
+                        },{
+                        type: 'bar',
+                        label: 'Ventas por proveedor',
+                        data: lista_totales,
+                        backgroundColor: ['rgb(40,171,189)'],
+                        borderColor: ['rgb(40,171,189)'],
+                        borderWidth: 1
+                    }],
+                    labels: lista_proveedores
+                },
+                options : {
+                    responsive: true,
+				    maintainAspectRatio: true,
+				    legend: {
+					    position: 'bottom',
+					    labels : {
+					        fontColor: 'rgb(154, 154, 154)',
+                            fontSize: 11,
+						    padding: 10,
+						    fontColor: '#1d7af3',
+					    }
+				    },
+                }
+            })
+            new Chart(beneficios, {
+                type: 'bar',
+                data: {
+                    labels: lista_proveedores,
+                    datasets: [{
+                        label: '% de Beneficios por proveedor',
+                        data: lista_pbeneficio,
+                        backgroundColor: ['rgb(23, 107, 135)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+				    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    scales: {
+                        y: {
+                            beginAtZero:true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                          display: false
+                        }
+                    }
+                }
+            })
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+{% endblock javascripts %}
+

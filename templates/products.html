@@ -1,0 +1,91 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+    {% with messages = get_flashed_messages(with_categories = True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert"> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% if error %}
+    <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Productos</h1>
+        {% if current_user.is_admin %}
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+                <a href="{{ url_for('crear_producto')}}" class="btn btn-sm btn-outline-secondary">Nuevo producto</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card border-primary mb-3 small">
+        <table id="multi-filter-select" class="table table-hover">
+            <thead>
+                <tr class="table-primary">
+                    <th scope="col">Referencia</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Proveedor</th>
+                    {% if current_user.is_admin %}
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for entrada in entradas %}
+                    <tr>
+                        <th scope="row">{{entrada.referencia}}</th>
+                        <td>{{entrada.nombre}}</td>
+                        {% for item in proveedorid %} <!-- Ponemos el nombre del proveedor, en vez de su código -->
+                            {% if item[0] == entrada.id %}
+                            <td>{{ item[1] }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        {% if current_user.is_admin %}
+                        <td><a href="{{ url_for('view_product', entrada_id=entrada.id)}}" class="btn btn-outline-success btn-sm">Ver</a></td>
+                        <td><a href="{{ url_for('editp', entrada_id=entrada.id)}}" class="btn btn-outline-info btn-sm">Editar</a></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock content %}
+<!-- Specific Page JS  -->
+{% block javascripts %}
+<script >
+    $(document).ready(function() {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable( {
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every( function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                    .appendTo( $(column.footer()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                            );
+
+                        column
+                        .search( val ? '^'+val+'$' : '', true, false )
+                        .draw();
+                    } );
+
+                    column.data().unique().sort().each( function ( d, j ) {
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+                } );
+            }
+        });
+    });
+</script>
+{% endblock javascripts %}

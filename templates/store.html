@@ -1,0 +1,64 @@
+{% extends "includes/base.html" %}
+
+{% block content %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+    {% with messages = get_flashed_messages(with_categories = True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert"> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% if error %}
+    <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Almacenes</h1>
+    </div>
+    <h1 class="h5">{{ nalmacen }}</h1>
+    {% for elemento in elementos %} <!-- Revisamos si hay stock bajo en algún producto -->
+        {% if elemento.stock <= 10 %} <!-- Establecemos que el pedido base son 100 unidades, con lo que avisamos
+                                            cuando solo queda el 10%, que son 10 unidades -->
+        <p class="text-primary"><span class="text-warning"><strong>Atención!</strong></span> El producto con referencia <strong>{{elemento.referencia}}</strong> no tiene stock suficiente. Se recomienda hacer pedido al proveedor.</p>
+        {% endif %}
+    {% endfor %}
+    <div class="card border-primary mb-3 small">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('almacen', almacen_id=1)}}" type="button"  class="btn btn-outline-primary">Almacen 1</a>
+            <a href="{{ url_for('almacen', almacen_id=2)}}" type="button"  class="btn btn-outline-primary">Almacen 2</a>
+            <a href="{{ url_for('almacen', almacen_id=3)}}" type="button"  class="btn btn-outline-primary">Tienda</a>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col">Referencia</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Proveedor</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Ubicación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for elemento in elementos %}
+                    {% if elemento.stock <= 10 %} <!-- Establecemos que el pedido base son 100 unidades, con lo que
+                                                        avisamos cuando solo queda el 10%, que son 10 unidades -->
+                    <tr class="table-danger">
+                    {% else %}
+                    <tr>
+                    {% endif %}
+                        <th scope="row">{{elemento.referencia}}</th>
+                        <td>{{elemento.nombre}}</td>
+                        {% for item in proveedorr %} <!-- Ponemos el nombre del proveedor, en vez de su código -->
+                            {% if item[0] == elemento.id %}
+                            <td>{{ item[1] }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{elemento.stock}}</td>
+                        <td>{{elemento.ubicacion}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock content %}
