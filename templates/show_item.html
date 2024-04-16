@@ -71,9 +71,11 @@
                             <input class="form-check-input mt-3" type="checkbox" id="disabledTextDescatalogados" value="{{ item.descatalogado }}" checked="" disabled="">
                         {% endif %}
                     </div>
-                    <div class="d-grid gap-2">
-                        <a href="{{ url_for('editp', entrada_id=item.id) }}" class="btn btn-primary mt-3">Editar</a>
-                    </div>
+                    {% if current_user.is_admin %}
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('editp', entrada_id=item.id) }}" class="btn btn-primary mt-3">Editar</a>
+                        </div>
+                    {% endif %}
                     {% endfor %}
                 </fieldset>
             </form>

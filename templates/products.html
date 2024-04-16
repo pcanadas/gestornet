@@ -29,8 +29,8 @@
                     <th scope="col">Referencia</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Proveedor</th>
-                    {% if current_user.is_admin %}
                     <th scope="col"></th>
+                    {% if current_user.is_admin %}
                     <th scope="col"></th>
                     {% endif %}
                 </tr>
@@ -45,8 +45,8 @@
                             <td>{{ item[1] }}</td>
                             {% endif %}
                         {% endfor %}
-                        {% if current_user.is_admin %}
                         <td><a href="{{ url_for('view_product', entrada_id=entrada.id)}}" class="btn btn-outline-success btn-sm">Ver</a></td>
+                        {% if current_user.is_admin %}
                         <td><a href="{{ url_for('editp', entrada_id=entrada.id)}}" class="btn btn-outline-info btn-sm">Editar</a></td>
                         {% endif %}
                     </tr>

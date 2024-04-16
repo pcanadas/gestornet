@@ -14,13 +14,6 @@
     {% endif %}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Clientes</h1>
-        {% if current_user.is_admin %}
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group me-2">
-                <a href="{{ url_for('show_signup_form')}}" class="btn btn-sm btn-outline-secondary">Nuevo cliente</a>
-            </div>
-        </div>
-        {% endif %}
     </div>
     <div class="card border-primary mb-3 small">
         <table id="multi-filter-select" class="table table-hover">

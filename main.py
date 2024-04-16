@@ -478,7 +478,7 @@ def editp(entrada_id):
     form = NewProductForm()
     edit_item = 'editar_producto'  # Variable para seleccionar que datos mostrar
     choices = get_choices(Proveedor)  # Establecemos los elementos del menú Proveedores
-    choices2 = get_choices2(Almacen)  # Establecemos los elementos del menú Almacenes
+    choices2 = get_choices(Almacen)  # Establecemos los elementos del menú Almacenes
     form.proveedor.choices = choices
     form.almacen.choices = choices2
     product = db.session.query(Producto).filter_by(id=entrada_id).first()
