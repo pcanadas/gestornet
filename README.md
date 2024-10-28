@@ -24,13 +24,13 @@ Python web application designed for a computer supplies company.
 
 ## Example images
 
-[Image1][img1]
+![Image1][img1]
 
-[Image2][img2]
+![Image2][img2]
 
-[Image3][img3]
+![Image3][img3]
 
-[Image4][img4]
+![Image4][img4]
 
 [img1]: /static/img/gestornet1.png
 [img2]: /static/img/gestornet2.png
