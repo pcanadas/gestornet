@@ -645,7 +645,7 @@ def status_401(error):
 
 @app.errorhandler(404)
 def status_404(error):
-    return '<h1>Página no encontrada YO</h1>', 404
+    return '<h1>Página no encontrada</h1>', 404
 
 if __name__ == '__main__':
     # En la siguiente línea estamos indicando a SQLAlchemy que cree, si no existe, las tablas
